@@ -119,7 +119,7 @@ public enum SignAlgorithm {
     
     public static SignAlgorithm byAlgorithm(AlgorithmIdentifier id) {
     	for (SignAlgorithm alg : SignAlgorithm.values()) {
-    		if (alg.getAlgorithmIdentifier().equals(id)) {
+    		if (alg.getAlgorithmIdentifier().getAlgorithm().equals(id.getAlgorithm())) {
     			return alg;
     		}
     	}
