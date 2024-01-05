@@ -6,7 +6,7 @@ It uses the Bouncy Castle algorithm implementation or the Rutoken implementation
 
 ## Sign file with token. Result will be file.pdf.sig. Source file will be attached.
 ```
-java -jar gost_sign.jar -i file.pdf --pkcs-id 74657374 --pkcs-library /usr/lib/librtpkcs11ecp.so -d 2022-12-31T23:59:59+03:00
+java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librtpkcs11ecp.so -d 2022-12-31T23:59:59+03:00
 ```
 
 Options:
@@ -19,10 +19,15 @@ option key | argument | default | description
 --pkcs-id | text | | Certificate id on token. Private and public keys should share this id. Id is ASCII encoded (74657374 = test)
 --pkcs-library | file | | Path to PKCS library
 
+Write certificate on token:
+
+```
+pkcs11-tool --module /usr/lib/librtpkcs11ecp.so --type cert --login --write-object test.pem --id 74657374
+```
 
 ## Add signature to PDF document
 ```
-java -jar gost_sign.jar -i file.pdf --pkcs-id 74657374 --pkcs-library /usr/lib/librtpkcs11ecp.so --pdf --pdf-visual --pdf-position-x 100 --pdf-position-y 100
+java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librtpkcs11ecp.so --pdf --pdf-visual --pdf-position-x 100 --pdf-position-y 100
 ```
 
 PDf options:
@@ -65,8 +70,10 @@ java -jar gost_sign.jar --verify -i file.pdf --sig-file file.pdf.sig
 ```
 
 ## Verify pdf
+
+If the signature is inside PDF.
 ```
-java -jar gost_sign.jar -i file.pdf --pdf
+java -jar gost_sign.jar --verify -i file.pdf --pdf
 ```
 
 

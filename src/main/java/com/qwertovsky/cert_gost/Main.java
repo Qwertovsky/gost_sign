@@ -226,7 +226,8 @@ public class Main {
 		Option pkcsIdOption = Option.builder()
 				.longOpt(CliOptions.PKCS_ID)
 				.argName("cert id on token")
-				.desc("Certificate id on token. Private and public keys should share this id")
+				.desc("Certificate id on token. Private and public keys should share this id."
+						+ " id is expected in native encoding. pkcs11-tool uses ASCII encoding")
 				.hasArg(true)
 				.build();
 		cliOptions.addOption(pkcsIdOption);
