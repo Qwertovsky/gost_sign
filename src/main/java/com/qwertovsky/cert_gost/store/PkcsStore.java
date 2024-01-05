@@ -1,5 +1,7 @@
 package com.qwertovsky.cert_gost.store;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,17 +29,30 @@ public class PkcsStore implements GostStore {
 	
 	private final Pkcs11 pkcs11;
 	private final NativeLong session;
-	private final String certId;
-	private final NativeLong privateKey;
-	private final Pkcs11Signer pkcs11Signer;
-	private final StreamDigestCalculator digestCalculator;
+	private final X509CertificateHolder certificateHolder;
+	private NativeLong privateKey;
+	private Pkcs11Signer pkcs11Signer;
+	private StreamDigestCalculator digestCalculator;
 	
 	public PkcsStore(Pkcs11 pkcs11, NativeLong session, String certId) throws Exception {
 		this.pkcs11 = pkcs11;
 		this.session = session;
-		this.certId = certId;
-		
-		X509CertificateHolder certificateHolder = getCertificateHolder();
+
+		this.certificateHolder = getCertificateHolder(certId);
+		this.init(pkcs11, session, certificateHolder);
+	}
+
+	public PkcsStore(Pkcs11 pkcs11, NativeLong session, File certFile) throws Exception {
+		this.pkcs11 = pkcs11;
+		this.session = session;
+
+		try(FileInputStream fis = new FileInputStream(certFile)) {
+			this.certificateHolder = new X509CertificateHolder(fis.readAllBytes());
+		}
+		this.init(pkcs11, session, certificateHolder);
+	}
+
+	private final void init(Pkcs11 pkcs11, NativeLong session, X509CertificateHolder certificateHolder) throws Exception {
 		privateKey = Pkcs11Operations.findPrivateKeyByCertificateValue(pkcs11, session, certificateHolder.getEncoded());
 		AlgorithmIdentifier algorithm = certificateHolder.getSignatureAlgorithm();
 		SignAlgorithm signAlgorithm = SignAlgorithm.byAlgorithm(algorithm);
@@ -73,6 +88,10 @@ public class PkcsStore implements GostStore {
 	
 	@Override
 	public X509CertificateHolder getCertificateHolder() throws Exception {
+        return certificateHolder;
+	}
+
+	private X509CertificateHolder getCertificateHolder(String certId) throws Exception {
         System.out.println("Finding signer certificate");
         final CK_ATTRIBUTE[] certificateTemplate;
         certificateTemplate = (CK_ATTRIBUTE[]) (new CK_ATTRIBUTE()).toArray(3);
@@ -80,7 +99,7 @@ public class PkcsStore implements GostStore {
         certificateTemplate[1].setAttr(Pkcs11Constants.CKA_ID, certId.getBytes()); // Certificate ID
         certificateTemplate[2].setAttr(Pkcs11Constants.CKA_CERTIFICATE_TYPE, Pkcs11Constants.CKC_X_509);
         
-//        certificateTemplate[3].setAttr(Pkcs11Constants.CKA_CERTIFICATE_CATEGORY, Constants.CK_CERTIFICATE_CATEGORY_TOKEN_USER);
+//        certificateTemplate[3].setAttr(Pkcs11Constants.CKA_CERTIFICATE_CATEGORY, Pkcs11Constants.CK_CERTIFICATE_CATEGORY_TOKEN_USER);
         byte[] signerCertificateValue = Pkcs11Operations.getFirstCertificateValue(pkcs11, session, certificateTemplate);
         X509CertificateHolder certificateHolder = new X509CertificateHolder(signerCertificateValue);
         return certificateHolder;

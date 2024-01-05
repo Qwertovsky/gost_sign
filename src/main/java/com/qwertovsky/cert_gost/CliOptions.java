@@ -6,6 +6,7 @@ public interface CliOptions {
 	static final String INPUT = "input";
 	static final String HELP = "help";
 	static final String PKCS_ID = "pkcs-id";
+	static final String CERT_FILE = "cert-file";
 	static final String PKCS_LIBRARY = "pkcs-library";
 	static final String PFX_FILE = "pfx-file";
 	static final String PFX_ALIAS = "pfx-alias";

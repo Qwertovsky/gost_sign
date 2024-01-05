@@ -10,19 +10,27 @@ java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librt
 ```
 
 Options:
+
 option key | argument | default | description
 ---|---|---|---
 -d,--date | text | now | Date of sign (use ISO 8601 format)
 --detached | | | Don't include input document to SIG file
 -h,--help | | | Print help
 -i,--input | file | error | File to sign
---pkcs-id | text | | Certificate id on token. Private and public keys should share this id. Id is ASCII encoded (74657374 = test)
+--pkcs-id | text | | Certificate id on token. Private and public keys should share this id. pkcs-tool uses ASCII encoded version (74657374 = test).
+--cert-file | text | | Insurer certificate on disk (DER format). The program looks for keys according this certificate
 --pkcs-library | file | | Path to PKCS library
 
 Write certificate on token:
 
 ```
 pkcs11-tool --module /usr/lib/librtpkcs11ecp.so --type cert --login --write-object test.pem --id 74657374
+```
+
+Make DER certificate from PEM:
+
+```
+openssl x509 -in certificate.pem -out certificate.der -outform DER 
 ```
 
 ## Add signature to PDF document

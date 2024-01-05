@@ -92,7 +92,7 @@ public class Main {
 	        StoreType storeType = null;
 		    if (commandLine.hasOption(CliOptions.PFX_FILE)) {
 		    	storeType = StoreType.PFX;
-		    } else if (commandLine.hasOption(CliOptions.PKCS_ID)) {
+		    } else if (commandLine.hasOption(CliOptions.PKCS_ID) || commandLine.hasOption(CliOptions.CERT_FILE)) {
 		    	storeType = StoreType.PKCS11;
 		    }
 		    if (storeType == null) {
@@ -106,7 +106,6 @@ public class Main {
 
 	        switch (storeType) {
 		        case PKCS11: {
-		        	String certId = commandLine.getOptionValue(CliOptions.PKCS_ID);
 		        	String libraryPath = commandLine.getOptionValue(CliOptions.PKCS_LIBRARY);
 		        	
 		        	if (!commandLine.hasOption(CliOptions.PKCS_LIBRARY)) {
@@ -119,7 +118,14 @@ public class Main {
 		        	pkcs11 = Native.load(libraryPath, RtPkcs11.class);
 		            pkcsSession = new NativeLong(Pkcs11Constants.CK_INVALID_HANDLE);
 		            Pkcs11Operations.initializePkcs11AndLoginToFirstToken(pkcs11, pkcsSession, String.valueOf(pinChars).getBytes());
-		            store = new PkcsStore(pkcs11, pkcsSession, certId);
+		            String certId = commandLine.getOptionValue(CliOptions.PKCS_ID);
+		            if (certId != null) {
+		            	store = new PkcsStore(pkcs11, pkcsSession, certId);
+		            } else {
+		            	String certPath = commandLine.getOptionValue(CliOptions.CERT_FILE);
+		            	store = new PkcsStore(pkcs11, pkcsSession, new File(certPath));
+		            }
+		            
 		            break;
 		        }
 		        case PFX: {
@@ -231,6 +237,14 @@ public class Main {
 				.hasArg(true)
 				.build();
 		cliOptions.addOption(pkcsIdOption);
+		
+		Option certFileOption = Option.builder()
+				.longOpt(CliOptions.CERT_FILE)
+				.argName("cert file on disk")
+				.desc("Insurer certificate DER file. Private and public keys for this certificate should be on token")
+				.hasArg(true)
+				.build();
+		cliOptions.addOption(certFileOption);
 		
 		Option pkcsLibraryOption = Option.builder()
 				.longOpt(CliOptions.PKCS_LIBRARY)
