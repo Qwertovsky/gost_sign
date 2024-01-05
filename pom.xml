@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.qwertovsky</groupId>
-	<artifactId>cert_gost</artifactId>
-	<version>1.0.0</version>
+	<artifactId>gost_sign</artifactId>
+	<version>1.2.0</version>
 
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
