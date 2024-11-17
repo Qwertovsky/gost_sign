@@ -3,4 +3,4 @@ target/
 .classpath
 .settings/
 dependency-reduced-pom.xml
-
+_other/

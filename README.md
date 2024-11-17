@@ -23,38 +23,6 @@ option key | argument | default | description
 --cert-file | text | | Insurer certificate on disk (DER or Base64 with boundaries). The program looks for keys according this certificate
 --pkcs-library | file | | Path to PKCS library
 
-Write certificate on token:
-
-```
-pkcs11-tool --module /usr/lib/librtpkcs11ecp.so --type cert --login --write-object test.pem --id 74657374
-```
-
-Make DER certificate from PEM:
-
-```
-openssl x509 -in certificate.pem -out certificate.der -outform DER 
-```
-
-## Add signature to PDF document
-```
-java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librtpkcs11ecp.so --pdf --pdf-visual --pdf-position-x 100 --pdf-position-y 100
-```
-
-PDf options:
-option key | argument | default | description
----|---|---|---
---pdf | | | Signatue is inside pdf file
---pdf-visual | | | Make visual field for sign. Text data from certificate or use your image
---pdf-page | number | 1 |Page for sign visualization. The fist page is 1
---pdf-position-x | number | error | Horizontal position on page in pixels
---pdf-position-y | number | error | Vertical position on page in pixels
---pdf-height | number | 85 | Sign field height in pixels
---pdf-width | number | 180 | Sign field width in pixels
---pdf-image | file | | Image to create visual pdf sign
---pdf-image-scale | | calculated | Image scale
---location | | | PDF sign attribute
---reason | | | PDF sign attribute
-
 
 ## Sign file with private key in PKCS#12 container on disk
 ```
@@ -79,6 +47,26 @@ option key | argument | default | description
 java -jar gost_sign.jar --verify -i file.pdf --sig-file file.pdf.sig
 ```
 
+## Add signature to PDF document
+```
+java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librtpkcs11ecp.so --pdf --pdf-visual --pdf-position-x 100 --pdf-position-y 100
+```
+
+PDF options:
+option key | argument | default | description
+---|---|---|---
+--pdf | | | Signature is inside pdf file
+--pdf-visual | | | Make visual field for sign. Text data from certificate or use your image
+--pdf-page | number | 1 |Page for sign visualization. The fist page is 1
+--pdf-position-x | number | error | Horizontal position on page in pixels
+--pdf-position-y | number | error | Vertical position on page in pixels
+--pdf-height | number | 85 | Sign field height in pixels
+--pdf-width | number | 180 | Sign field width in pixels
+--pdf-image | file | | Image to create visual pdf sign
+--pdf-image-scale | | calculated | Image scale
+--location | | | PDF sign attribute
+--reason | | | PDF sign attribute
+
 ## Verify pdf
 
 If the signature is inside PDF.
@@ -86,7 +74,17 @@ If the signature is inside PDF.
 java -jar gost_sign.jar --verify -i file.pdf --pdf
 ```
 
+## Write certificate on token:
 
+```
+pkcs11-tool --module /usr/lib/librtpkcs11ecp.so --type cert --login --write-object test.pem --id 74657374
+```
+
+## Make DER certificate from PEM:
+
+```
+openssl x509 -in certificate.pem -out certificate.der -outform DER 
+```
     
 
 
