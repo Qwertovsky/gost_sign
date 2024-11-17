@@ -4,7 +4,9 @@ It uses the Bouncy Castle algorithm implementation or the Rutoken implementation
 
 # Usage
 
-## Sign file with token. Result will be file.pdf.sig. Source file will be attached.
+## Sign file with token.
+
+Result will be in file `file.pdf.sig`. Detached by default.
 ```
 java -jar gost_sign.jar -i file.pdf --pkcs-id test --pkcs-library /usr/lib/librtpkcs11ecp.so -d 2022-12-31T23:59:59+03:00
 ```
@@ -14,7 +16,7 @@ Options:
 option key | argument | default | description
 ---|---|---|---
 -d,--date | text | now | Date of sign (use ISO 8601 format)
---detached | | | Don't include input document to SIG file
+--attached | | | Include input document to SIG file
 -h,--help | | | Print help
 -i,--input | file | error | File to sign
 --pkcs-id | text | | Certificate id on token. Private and public keys should share this id. pkcs-tool uses ASCII encoded version (74657374 = test).

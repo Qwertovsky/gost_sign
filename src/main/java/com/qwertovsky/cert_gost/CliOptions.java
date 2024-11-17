@@ -10,7 +10,7 @@ public interface CliOptions {
 	static final String PKCS_LIBRARY = "pkcs-library";
 	static final String PFX_FILE = "pfx-file";
 	static final String PFX_ALIAS = "pfx-alias";
-	static final String DETACHED = "detached";
+	static final String ATTACHED = "attached";
 	
 	static final String PDF = "pdf";
 	static final String LOCATION = "location";

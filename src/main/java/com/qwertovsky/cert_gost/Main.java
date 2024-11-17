@@ -148,7 +148,7 @@ public class Main {
             File fileSig = new File(fileToSig.getParent(), fileToSig.getName() + ".sig");
 	        try (FileInputStream fis = new FileInputStream(fileToSig);
 	        		FileOutputStream sigFos = new FileOutputStream(fileSig);) {
-		        byte[] sign = cmsSigner.sign(fis, date, !commandLine.hasOption(CliOptions.DETACHED));
+		        byte[] sign = cmsSigner.sign(fis, date, commandLine.hasOption(CliOptions.ATTACHED));
 		        sigFos.write(sign);
 	        }
 	        System.out.println("Sig: " + Verify.verifyDetached(fileToSig));
@@ -271,8 +271,8 @@ public class Main {
 		cliOptions.addOption(pfxAliasOption);
 		
 		Option detachedOption = Option.builder()
-				.longOpt(CliOptions.DETACHED)
-				.desc("Don't include input document to SIG file")
+				.longOpt(CliOptions.ATTACHED)
+				.desc("Include input document to SIG file")
 				.build();
 		cliOptions.addOption(detachedOption);
 		
