@@ -57,7 +57,7 @@ public class PkcsStore implements GostStore {
 
 	private final void init(Pkcs11 pkcs11, NativeLong session, X509CertificateHolder certificateHolder) throws Exception {
 		privateKey = Pkcs11Operations.findPrivateKeyByCertificateValue(pkcs11, session, certificateHolder.getEncoded());
-		AlgorithmIdentifier algorithm = certificateHolder.getSignatureAlgorithm();
+		AlgorithmIdentifier algorithm = getSignatureAlgorithm(certificateHolder);
 		SignAlgorithm signAlgorithm = SignAlgorithm.byAlgorithm(algorithm);
 		pkcs11Signer = new Pkcs11Signer(signAlgorithm, pkcs11, session.longValue(), privateKey.longValue());
 		digestCalculator = new StreamDigestCalculator(getDigest(signAlgorithm.getDigestAlgorithm().getAlgorithmIdentifier()));
