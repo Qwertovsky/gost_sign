@@ -3,6 +3,8 @@ package com.qwertovsky.cert_gost.store;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +49,8 @@ public class PkcsStore implements GostStore {
 		this.session = session;
 
 		try(FileInputStream fis = new FileInputStream(certFile)) {
-			this.certificateHolder = new X509CertificateHolder(fis.readAllBytes());
+			Certificate certificate = CertificateFactory.getInstance("X509").generateCertificate(fis);
+			this.certificateHolder = new X509CertificateHolder(certificate.getEncoded());
 		}
 		this.init(pkcs11, session, certificateHolder);
 	}

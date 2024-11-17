@@ -10,6 +10,7 @@ import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.Security;
 import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -18,12 +19,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
-import org.bouncycastle.util.io.Streams;
 
 public class PfxCreator {
 
@@ -134,13 +132,12 @@ public class PfxCreator {
 	private static Certificate[] getCertChain(String... chainPaths) throws Exception {
 		int chainLength = chainPaths.length;
 		Certificate[] chain = new Certificate[chainLength];
-
+		int i = 0;
 		for (String certPath : chainPaths) {
 			try(FileInputStream fis = new FileInputStream(certPath)) {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		        Streams.pipeAll(fis, baos, 32 * 1024);
-				X509CertificateHolder certificate = new X509CertificateHolder(baos.toByteArray());
-				chain[1] = new JcaX509CertificateConverter().getCertificate(certificate);
+		        Certificate certificate = CertificateFactory.getInstance("X509").generateCertificate(fis);
+		        chain[i] = certificate;
+		        i++;
 			}
 		}
 		return chain;

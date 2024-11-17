@@ -20,7 +20,7 @@ option key | argument | default | description
 -h,--help | | | Print help
 -i,--input | file | error | File to sign
 --pkcs-id | text | | Certificate id on token. Private and public keys should share this id. pkcs-tool uses ASCII encoded version (74657374 = test).
---cert-file | text | | Insurer certificate on disk (DER format). The program looks for keys according this certificate
+--cert-file | text | | Insurer certificate on disk (DER or Base64 with boundaries). The program looks for keys according this certificate
 --pkcs-library | file | | Path to PKCS library
 
 Write certificate on token:
@@ -70,7 +70,7 @@ option key | argument | default | description
 ---|---|---|---
 --pfx-create | | | Create pfx container. Try --pfx-create --help
 --key-file | file | | Private key file
---cert-chain | file | | Certificate chain files. Option may be defined more than once. The first is public certificate for private key.
+--cert-chain | file | | Certificate chain files (DER or Base64 with boundaries). Option may be defined more than once. The first is public certificate for private key.
 --pfx-alias | text | | Key alias in pfx store
 --pfx-file | file | | PFX key store file
 
